@@ -7,6 +7,9 @@ session_start();
     $Username = "";
 	$Password = "";
 	$Email = "";
+	define("EncryptMethod","GeeksforGeeks");
+	define("EncryptNumber","1234567891011121");
+	
 	include 'connect.php';
     if (isset($_POST['save'])) 
 	{
@@ -26,7 +29,7 @@ session_start();
 		}
 		else
 		{
-			$encrypt = openssl_encrypt($Password, "AES-128-CTR", "GeeksforGeeks" , 0, '1234567891011121'); 
+			$encrypt = openssl_encrypt($Password, "AES-128-CTR",  EncryptMethod, 0, EncryptNumber); 
             $sql = mysqli_query($con, "INSERT INTO Accounts (UserID, Email , Username , Password , Site) 
 			VALUES ('$ID','$Email','$Username','$encrypt','$Account')") or die(mysqli_error($con));
             $message = "Data saved";
@@ -55,7 +58,7 @@ session_start();
         }
 		 else 
 		{
-			$encrypt = openssl_encrypt($Password, "AES-128-CTR", "GeeksforGeeks" , 0, '1234567891011121'); 
+			$encrypt = openssl_encrypt($Password, "AES-128-CTR", EncryptMethod , 0, EncryptNumber); 
             mysqli_query($con, "UPDATE accounts SET Site='$Account', Username='$Username', Password='$encrypt', Email='$Email' WHERE AccountID='".$id."'") or die(mysqli_error($con));
             $message = "Data updated!";
             $Account = "";
@@ -78,7 +81,7 @@ session_start();
 		#assigns data from record
 		$Account = $n['Site'];
 		$Username = $n["Username"];
-		$Password = $decrypt = openssl_decrypt ($n['Password'], "AES-128-CTR", "GeeksforGeeks", 0 , '1234567891011121');
+		$Password = $decrypt = openssl_decrypt ($n['Password'], "AES-128-CTR", EncryptMethod, 0 , EncryptNumber);
 		$Email = $n['Email'];
 		$update = true;}		
 
@@ -95,7 +98,7 @@ session_start();
 <head>
 <meta charset="utf-8">
 <title>Accounts Page</title>
-<link rel="stylesheet" type = "text/css" href="Style.css">
+<link rel="stylesheet" type = "text/css" href="CSS/Style.css">
 </head>
 
 <body>
@@ -142,7 +145,7 @@ else{
 	
 	<?php 
 	while ($row = mysqli_fetch_array($query)) {
-		$decrypt = openssl_decrypt ($row['Password'], "AES-128-CTR", "GeeksforGeeks", 0 , '1234567891011121');
+		$decrypt = openssl_decrypt ($row['Password'], "AES-128-CTR", EncryptMethod, 0 , EncryptNumber);
 		echo
   		 "<tr>
    		    <td>{$row['Site']}</td>
@@ -161,11 +164,15 @@ else{
 </table>
 
 <form name="frmUser" method="post" action="" align="center">
-<div class="message"><?php if($message!="") { echo $message; } ?></div>
+<?php if($message!="") { ?>
+<div class="message"> 
+	<?php echo $message; ?>
+</div>
+<?php } ?>
 <h3 align="center">Accounts</h3>
 
 <div class="input-group">
-Website
+<label>Website</label>
 <input type="text" name="Account" value="<?php echo $Account;?>">
 <div>
 
@@ -180,7 +187,7 @@ Website
 <div>
 
 <div class="input-group">
-Email
+<label>Email</label>
 <input type="text" name="Email" value="<?php echo $Email;?>">
 <div>
 

@@ -44,7 +44,7 @@ if (isset($_POST['Submit']))
 
 <html>
 <head>
-<link rel="stylesheet" type = "text/css" href="Style.css">
+<link rel="stylesheet" type = "text/css" href="CSS/Style.css">
 <title>User Login</title>
 </head>
 <body>
@@ -63,7 +63,11 @@ else{
 <h1 style="text-align:center">Login</h1>
 
 <form name="frmUser" method="post" action="" align="center">
-<div class="message"><?php if($message!="") { echo $message; } ?></div>
+<?php if($message!="") { ?>
+<div class="message"> 
+	<?php echo $message; ?>
+</div>
+<?php } ?>
 <h3 align="center">Enter Login Details</h3>
 
 <div class="input-group">

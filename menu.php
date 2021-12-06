@@ -2,6 +2,13 @@
     session_start();
 ?>
 
+<head>
+<title>navbar</title>
+<link rel="stylesheet" type = "text/css" href="CSS/menu.css">
+</head>
+
+<body>
+
 <div class="topnav">
 	<a class="active" href="accounts.php">Account</a>
     <?php
@@ -21,8 +28,5 @@
     ?>
 </div>
 
-<head>
-<link rel="stylesheet" type = "text/css" href="menu.css">
-</head>
-
+</body>
 

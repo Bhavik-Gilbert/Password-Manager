@@ -74,7 +74,7 @@ if (!empty($_POST)){
 
 <html>
 <head>
-<link rel="stylesheet" type = "text/css" href="Style.css">
+<link rel="stylesheet" type = "text/css" href="CSS/Style.css">
 <title>Signup Page</title>
 </head>
 <body>
@@ -93,9 +93,9 @@ else{
 ?>
 </body>
 <form name="frmUser" method="post" action="" align="center">
+<?php if($message) { ?>
 <div class="message">
-	<?php if($message) 
-	{ 
+    <?php
         if (!empty($field_err)) 
 		{
             echo $field_err;
@@ -114,9 +114,9 @@ else{
         if (!empty($pass_err)) 
 		{
             echo $pass_err;
-        }
-	} ?>
+        } ?>
 </div>
+<?php } ?>
 <h3 align="center">Accounts</h3>
 
 <div class="input-group">

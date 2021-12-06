@@ -1,39 +1,57 @@
-body {background-color: #9A9A9A}
-h1 {color: #000;}
-h2 {color: #000;}
-h3 {color: #000;}
+body {background: linear-gradient(-45deg, #ff6700, #ff6700, #000, #000);
+    background-size: 400% 400%; background-repeat: no-repeat; font-size: 19px;
+    background-attachment: fixed; animation: gradient 20s ease infinite;}
+body::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
+}
+
+    @keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+h1 {color: #fff; font-family: "Courier New", "Lucida Console", monospace;}
+h2 {color: #fff;}
+h3 {color: #fff;}
 h4 {color: #333;}
 h5 {color: #333;}
 h6 {color: #333;}
 p {color: #333;}
 
-
-body {
-    font-size: 19px;
-}
 table{
     width: 50%;
     margin: 30px auto;
-    border-collapse: collapse;
-    text-align: left;
+    border: 2px ridge #fff;
+    text-align: center;
+    color: #fff;
 }
 tr {
-    border-bottom: 3px solid #000;
+    border-bottom: 3px solid #fff;
 }
 th, td{
-    border: none;
+    border: 1px dashed #fff;
     height: 30px;
     padding: 2px;
 }
 tr:hover {
-    background: #30d5c8;
+    background: #ff8b3d;
 }
 
 form {
     width: 45%;
     margin: 50px auto;
     text-align: left;
-    padding: 20px; 
+    padding: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
 }
 
 .input-group {
@@ -41,8 +59,9 @@ form {
 }
 .input-group label {
     display: block;
-    text-align: left;
+    text-align: center;
     margin: 3px;
+    color: #fff;
 }
 .input-group input {
     height: 30px;
@@ -50,13 +69,15 @@ form {
     padding: 5px 10px;
     font-size: 16px;
     border-radius: 5px;
-    border: 3px solid #0CC;
+    text-align: center;
+    border: 3px solid #FFA500;
+    
 }
 .btn {
     padding: 10px;
     font-size: 15px;
     color: white;
-    background: #5F9EA0;
+    background: #FFA500;
     border: none;
     border-radius: 5px;
 	text-align: center;
@@ -79,10 +100,11 @@ form {
 .message {
     margin: 30px auto; 
     padding: 10px; 
-    border-radius: 5px; 
-    color: #3c763d; 
-    background: #ddff08; 
-    border: 1px solid #3c763d;
+    border-radius: 10px; 
+    background: #FFA500; 
+    border: 2px solid #ff8b3d;
+    color: #fff; 
+    font-family: 'Garamond', 'Times New Roman', serif;
     width: 50%;
     text-align: center;
 }
