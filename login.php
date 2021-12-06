@@ -1,27 +1,45 @@
 <?php
-function Check($password,$old_Hash){
-	$Hash = crypt($password, $old_Hash);
-	if ($hash = $old_Hash){
-	return true;}
-	else {
-	return false;}}
+function Check($password, $old_Hash)
+{
+    $hash = crypt($password, $old_Hash);
+    return $hash == $old_Hash;
+}
 
 
 
 session_start();
 $message="";
-if (isset($_POST['Submit'])) {
+if (isset($_POST['Submit'])) 
+	{
+		
+	include 'connect.php';
 	
-include 'connect.php';
- 
-$result = mysqli_query($con,"SELECT * FROM User WHERE Username='" . $_POST["Username"] ."'");
-$row  = mysqli_fetch_array($result);
+	$result = mysqli_query($con,"SELECT * FROM User WHERE Username='" . $_POST["Username"] ."'");
+	$row  = mysqli_fetch_array($result);
 
-if(is_array($row)){ 
+	if(is_array($row))
+	{ 
+        if (Check($_POST["Password"],$row["Password"]) == $row["Password"]) {
+			$login = true;
+        }
+		else
+		{
+			$login = false;
+		}
+	}
+	
+	if($login)
+	{
 		$_SESSION["ID"] = $row['UserID'];
-		$_SESSION["Username"] = $row['Username'];}
-else {
-$message = "Invalid Username or Password!";}}
+        $_SESSION["Username"] = $row['Username'];
+	}
+	else
+	{
+		$message = "Invalid Username or Password!";
+	}
+}
+
+
 ?>
 
 <html>
@@ -33,20 +51,17 @@ $message = "Invalid Username or Password!";}}
 <?php
 include 'menu.php';
 ?>
-
-<h1 style="text-align:center">Login</h1>
-
 <?php
 if($_SESSION["Username"]) {
+	header("location:accounts.php");
+}
+
+else{
+
 ?>
-Welcome <?php echo $_SESSION["Username"]; ?>. 
-You have already logged in.
-Click here to create a new booking <a href="newaccount.php" tite="Logout">
-	<br></br>
-Click here to <a href="logout.php" tite="Logout">Logout
-<?php
-}else{
-?>
+	
+<h1 style="text-align:center">Login</h1>
+
 <form name="frmUser" method="post" action="" align="center">
 <div class="message"><?php if($message!="") { echo $message; } ?></div>
 <h3 align="center">Enter Login Details</h3>
@@ -58,7 +73,7 @@ Click here to <a href="logout.php" tite="Logout">Logout
 
 <div class="input-group">
 <label>Password</label>
-<input type="text" name="Password">
+<input type="password" name="Password">
 <div>
 
 <div class="input-group">
@@ -74,4 +89,3 @@ Click here to <a href="logout.php" tite="Logout">Logout
 
 </body>
 </html>
-

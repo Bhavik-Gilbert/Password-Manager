@@ -86,3 +86,6 @@ form {
     width: 50%;
     text-align: center;
 }
+
+.logout{padding: 10px;font-size: 10px;color: #fff;background: #777777;border: #000;border-radius: 5px;
+      text-align: center; border:3px;border-style: solid; font-size: 15px;}

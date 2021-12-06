@@ -8,39 +8,87 @@ session_start();
 	$Password = "";
 	$Email = "";
 	include 'connect.php';
-    if (isset($_POST['save'])) {
+    if (isset($_POST['save'])) 
+	{
         $ID = $_SESSION['ID'];
 		$Email = $_POST['Email'];
 		$Username = $_POST['Username'];
 		$Password = $_POST['Password'];
 		$Account = $_POST['Account'];
-        $sql = mysqli_query($con, "INSERT INTO Accounts (UserID, Email , Username , Password , Site) 
-		VALUES ('$ID','$Email','$Username','$Password','$Account')") or die(mysqli_error($con));
-		$message = "Data saved";
-		$Account = "";
- 	    $Username = "";
-		$Password = "";
-		$Email = "";
-        header('location: accounts.php');
+
+		if(empty($Email) || empty($username) || empty($Password) || empty($Account))
+		{
+			$message = "Please fill in all fields";
+		}
+		else if(!filter_var($Email, FILTER_VALIDATE_EMAIL))
+		{
+			$message = "Invalid email";
+		}
+		else
+		{
+			$encrypt = openssl_encrypt($Password, "AES-128-CTR", "GeeksforGeeks" , 0, '1234567891011121'); 
+            $sql = mysqli_query($con, "INSERT INTO Accounts (UserID, Email , Username , Password , Site) 
+			VALUES ('$ID','$Email','$Username','$encrypt','$Account')") or die(mysqli_error($con));
+            $message = "Data saved";
+            $Account = "";
+            $Username = "";
+            $Password = "";
+            $Email = "";
+        }
     }
 
-    if (isset($_POST['update'])) {
-        $Account = $n['Site'];
-        $Username = $n['Usernmae'];
-        $Password = $n['Password'];
+    if (isset($_POST['update'])) 
+	{
+		$id = $_SESSION['edit'];
+       	$Email = $_POST['Email'];
+		$Username = $_POST['Username'];
+		$Password = $_POST['Password'];
+		$Account = $_POST['Account'];
         
-        if (($ShootType == "") and ($Date == "") and ($Address == "") and ($StartTime == "") and ($Length == "")) {
+        if (empty($Account) || empty($Username) || empty($Password) || empty($Email)) 
+		{
             $message = "Please fill in all of the fields";
-        } elseif (!is_numeric($Length)) {
-            $message = "Invalid Value for Shoot Length Field";
-        } else {
-            mysqli_query($con, "UPDATE Accounts SET ShootType='$ShootType', PackageID='$PackageType', Date='$Date', Address='$Address', StartTime='$StartTime', Length='$Length', Price='$Price',Status='$Status', WHERE BookingID='2'") or die(mysqli_error($con));
-            $message = "Data updated!";
         }
-        $Account = "";
-        $Username = "";
-        $Password = "";
-        header('location: accounts.php');
+		else if(!filter_var($Email, FILTER_VALIDATE_EMAIL))
+		{
+            $message = "Invalid Value for Shoot Length Field";
+        }
+		 else 
+		{
+			$encrypt = openssl_encrypt($Password, "AES-128-CTR", "GeeksforGeeks" , 0, '1234567891011121'); 
+            mysqli_query($con, "UPDATE accounts SET Site='$Account', Username='$Username', Password='$encrypt', Email='$Email' WHERE AccountID='".$id."'") or die(mysqli_error($con));
+            $message = "Data updated!";
+            $Account = "";
+            $Username = "";
+            $Password = "";
+            unset($_SESSION['edit']);
+            $update = false;
+        }
+	}
+
+	if (isset($_GET['edit'])) {
+		#assigns id from the edit id
+		$id = $_GET['edit'];
+		#assigns id to be used on update
+		$_SESSION['edit'] = $id;
+		#collects record from the BookingID at id
+		$record = mysqli_query($con, "SELECT * FROM accounts WHERE AccountID='" . $id ."'");
+		$n = mysqli_fetch_array($record);
+
+		#assigns data from record
+		$Account = $n['Site'];
+		$Username = $n["Username"];
+		$Password = $decrypt = openssl_decrypt ($n['Password'], "AES-128-CTR", "GeeksforGeeks", 0 , '1234567891011121');
+		$Email = $n['Email'];
+		$update = true;}		
+
+	if (isset($_GET['del'])) 
+	{
+		#assigns id from the del id
+		$id = $_GET['del'];
+		#deletes record in the Booking Table at the corresponding BookingID
+		mysqli_query($con, "DELETE FROM accounts WHERE AccountID='" . $id ."'") or (mysqli_error($con));
+		$message = "Data deleted";
 	}
 ?>
 
@@ -60,9 +108,10 @@ if (isset($_SESSION["ID"])) {
 include 'connect.php';
 
 if (isset($_POST['submit'])) {
-        $query = mysqli_query($con, "SELECT * FROM Accounts WHERE (UserID='".$_SESSION["ID"]."' and 
-		Site LIKE'%".$_POST['search']."%')")
-		or die(mysqli_error($con));}
+        $query = mysqli_query($con, "SELECT * FROM Accounts WHERE (UserID='".$_SESSION["ID"]."') and 
+		(Site LIKE'%".$_POST['search']."%' OR Email LIKE'%".$_POST['search']."%' OR Username LIKE'%".$_POST['search']."%')")
+		or die(mysqli_error($con));
+	}
 else{
     $query = mysqli_query($con, "SELECT * FROM Accounts WHERE UserID='". $_SESSION["ID"]."'")
    or die(mysqli_error($con));} ?>
@@ -85,20 +134,30 @@ else{
 		<tr>
 			<th>Account</th>
 			<th>Email</th>
-			<th>Usernmae</th>
+			<th>Username</th>
 			<th>Password</th>
+			<th colspan="5">Action</th>
 		</tr>
 	</thead>
 	
 	<?php 
 	while ($row = mysqli_fetch_array($query)) {
+		$decrypt = openssl_decrypt ($row['Password'], "AES-128-CTR", "GeeksforGeeks", 0 , '1234567891011121');
 		echo
   		 "<tr>
    		    <td>{$row['Site']}</td>
    		    <td>{$row['Email']}</td>
     		<td>{$row['Username']}</td>
-			<td>{$row['Password']}</td>
-		<tr>"; } ?>
+			<td>{$decrypt}</td>
+			";
+			?>
+			<td>
+				<a href="accounts.php?edit=<?php echo $row['AccountID']; ?>" class="edit_btn">Edit</a>
+			</td>
+			<td>
+				<a href="accounts.php?del=<?php echo $row['AccountID']; ?>" class="del_btn">Delete</a>
+			</td> 
+		</tr> <?php } ?>
 </table>
 
 <form name="frmUser" method="post" action="" align="center">
@@ -134,7 +193,12 @@ Email
 		</div>
 </form>
 
-<?php } else {echo "Please login first";} ?>
+<?php } 
+else 
+{
+	header("location:login.php");
+} 
+?>
 </body>
 </html>
 
