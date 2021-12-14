@@ -30,7 +30,7 @@ session_start();
 		else
 		{
 			$encrypt = openssl_encrypt($Password, "AES-128-CTR",  EncryptMethod, 0, EncryptNumber); 
-            $sql = mysqli_query($con, "INSERT INTO Accounts (UserID, Email , Username , Password , Site) 
+            $sql = mysqli_query($con, "INSERT INTO accounts (UserID, Email , Username , Password , Site) 
 			VALUES ('$ID','$Email','$Username','$encrypt','$Account')") or die(mysqli_error($con));
             $message = "Data saved";
             $Account = "";
@@ -111,12 +111,12 @@ if (isset($_SESSION["ID"])) {
 include 'connect.php';
 
 if (isset($_POST['submit'])) {
-        $query = mysqli_query($con, "SELECT * FROM Accounts WHERE (UserID='".$_SESSION["ID"]."') and 
+        $query = mysqli_query($con, "SELECT * FROM accounts WHERE (UserID='".$_SESSION["ID"]."') and 
 		(Site LIKE'%".$_POST['search']."%' OR Email LIKE'%".$_POST['search']."%' OR Username LIKE'%".$_POST['search']."%')")
 		or die(mysqli_error($con));
 	}
 else{
-    $query = mysqli_query($con, "SELECT * FROM Accounts WHERE UserID='". $_SESSION["ID"]."'")
+    $query = mysqli_query($con, "SELECT * FROM accounts WHERE UserID='". $_SESSION["ID"]."'")
    or die(mysqli_error($con));} ?>
 
 <form action="" method="post" align="center" style="background-color:transparent;

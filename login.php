@@ -14,7 +14,7 @@ if (isset($_POST['Submit']))
 		
 	include 'connect.php';
 	
-	$result = mysqli_query($con,"SELECT * FROM User WHERE Username='" . $_POST["Username"] ."'");
+	$result = mysqli_query($con,"SELECT * FROM user WHERE Username='" . $_POST["Username"] ."'");
 	$row  = mysqli_fetch_array($result);
 
 	if(is_array($row))
