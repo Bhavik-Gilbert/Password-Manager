@@ -23,7 +23,7 @@
 
 /* Add a color to the active/current link */
 .topnav a.active {
-  color: #FFA500;
+  color: #0d22de;
 }
 
 .topnav a.active:hover {
