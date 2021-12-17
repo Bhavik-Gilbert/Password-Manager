@@ -120,7 +120,7 @@ else{
 <h3 align="center">Accounts</h3>
 
 <div class="input-group">
-Name
+<label>Name</label>
 <input type="text" name="Name">
 <div>
 
