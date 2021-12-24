@@ -1,6 +1,4 @@
-body {background: linear-gradient(-45deg, #ff6700, #ff6700, #000, #000);
-    background-size: 400% 400%; background-repeat: no-repeat; font-size: 19px;
-    background-attachment: fixed; animation: gradient 20s ease infinite;}
+body {background-color: #333333; font-size: 19px;}
 body::-webkit-scrollbar {
   display: none; /* for Chrome, Safari, and Opera */
 }

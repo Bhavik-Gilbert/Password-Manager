@@ -1,24 +1,29 @@
 /* Add a black background color to the top navigation */
 .topnav {
-  overflow: hidden;
-  border-top: 2px double;
-  border-bottom: 2px double;
+  overflow: auto;
+  border-left: 2px double;
   border-color: #FFA500;
+  background-color: #000;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 10%;
+  position: fixed; /* Make it stick, even on scroll */
+  overflow: auto; /* Enable scrolling if the sidenav has too much content */
+  background-color: #000;
 }
 
 /* Style the links inside the navigation bar */
 .topnav a {
-  float: left;
-  color: #f2f2f2;
-  background-color: #000;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: underline;
-  font-size: 17px;
+  display: block;
+  color: #fff;
+  padding: 8px 16px;
+  text-decoration: none;
 }
 
 /* Change the color of links on hover */
 .topnav a:hover {
+  background-color: #fff;
   color: #FFA500;
 }
 
@@ -29,5 +34,6 @@
 }
 
 .topnav a.active:hover {
-  color: #000;
+  background-color: #000;
+  color: #FFA500;
 }

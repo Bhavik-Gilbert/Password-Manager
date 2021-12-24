@@ -104,7 +104,9 @@ session_start();
 <body>
 <?php
 include 'menu.php';
-if (isset($_SESSION["ID"])) {
+if (!isset($_SESSION["ID"])) {
+	header("location:login.php");
+}
 ?>
 <h1 style="text-align:center">Accounts</h1>
 <?php
@@ -200,12 +202,6 @@ else{
 		</div>
 </form>
 
-<?php } 
-else 
-{
-	header("location:login.php");
-} 
-?>
 </body>
 </html>
 
