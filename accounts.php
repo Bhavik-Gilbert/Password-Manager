@@ -21,18 +21,37 @@ session_start();
 
 		if(empty($Email) || empty($username) || empty($Password) || empty($Account))
 		{
-			$message = "Please fill in all fields";
+			$message .= "Please fill in all fields<br>";
 		}
-		else if(!filter_var($Email, FILTER_VALIDATE_EMAIL))
+		if(!filter_var($Email, FILTER_VALIDATE_EMAIL))
 		{
-			$message = "Invalid email";
+			$message .= "Invalid email<br>";
 		}
-		else
+		if(!filter_var($Account, FILTER_VALIDATE_URL))
 		{
+			$message .= "Invalid web account URL<br>";
+		}
+		if(empty($message))
+		{
+			$Account = explode(".",$Account);
+			$Account = $Account[count($Account)-2];
+
+			$uppercase = preg_match('@[A-Z]@', $Password);
+			$lowercase = preg_match('@[a-z]@', $Password);
+			$number    = preg_match('@[0-9]@', $Password);
+			$specialChars = preg_match('@[^\w]@', $Password);
+
+			if (strlen($Password)<8 || (!$uppercase || !$lowercase || !$number || !$specialChars))
+			{
+				$message .= "STRONG PASSWORD ADVICE<br>you might want to change your password for this site<br><br>";
+				$message .= "Password  should be at least 8 characters long<br>";
+				$message .= "Password should contain at least 1 uppercase, 1 lowercase, 1 numeric and 1 special character<br>";
+			}
+
 			$encrypt = openssl_encrypt($Password, "AES-128-CTR",  EncryptMethod, 0, EncryptNumber); 
             $sql = mysqli_query($con, "INSERT INTO accounts (UserID, Email , Username , Password , Site) 
 			VALUES ('$ID','$Email','$Username','$encrypt','$Account')") or die(mysqli_error($con));
-            $message = "Data saved";
+            $message .= "Data saved";
             $Account = "";
             $Username = "";
             $Password = "";
@@ -48,16 +67,35 @@ session_start();
 		$Password = $_POST['Password'];
 		$Account = $_POST['Account'];
         
-        if (empty($Account) || empty($Username) || empty($Password) || empty($Email)) 
+        if(empty($Email) || empty($username) || empty($Password) || empty($Account))
 		{
-            $message = "Please fill in all of the fields";
-        }
-		else if(!filter_var($Email, FILTER_VALIDATE_EMAIL))
+			$message .= "Please fill in all fields<br>";
+		}
+		if(!filter_var($Email, FILTER_VALIDATE_EMAIL))
 		{
-            $message = "Invalid Value for Shoot Length Field";
-        }
-		 else 
+			$message .= "Invalid email<br>";
+		}
+		if(!filter_var($Account, FILTER_VALIDATE_URL))
 		{
+			$message .= "Invalid web account URL<br>";
+		}
+		if(empty($message))
+		{
+			$Account = explode(".",$Account);
+			$Account = $Account[count($Account)-2];
+			
+			$uppercase = preg_match('@[A-Z]@', $Password);
+			$lowercase = preg_match('@[a-z]@', $Password);
+			$number    = preg_match('@[0-9]@', $Password);
+			$specialChars = preg_match('@[^\w]@', $Password);
+
+			if ((strlen($Password)<8) || (!$uppercase || !$lowercase || !$number || !$specialChars))
+			{
+				$message .= "STRONG PASSWORD ADVICE<br>you might want to change your password for this site<br><br>";
+				$message .= "Password  should be at least 8 characters long<br>";
+				$message .= "Password should contain at least 1 uppercase, 1 lowercase, 1 numeric and 1 special character<br>";
+			}
+			
 			$encrypt = openssl_encrypt($Password, "AES-128-CTR", EncryptMethod , 0, EncryptNumber); 
             mysqli_query($con, "UPDATE accounts SET Site='$Account', Username='$Username', Password='$encrypt', Email='$Email' WHERE AccountID='".$id."'") or die(mysqli_error($con));
             $message = "Data updated!";
@@ -79,7 +117,7 @@ session_start();
 		$n = mysqli_fetch_array($record);
 
 		#assigns data from record
-		$Account = $n['Site'];
+		$Account = "https://www." . $n['Site'] . ".com";
 		$Username = $n["Username"];
 		$Password = $decrypt = openssl_decrypt ($n['Password'], "AES-128-CTR", EncryptMethod, 0 , EncryptNumber);
 		$Email = $n['Email'];
@@ -90,8 +128,12 @@ session_start();
 		#assigns id from the del id
 		$id = $_GET['del'];
 		#deletes record in the Booking Table at the corresponding BookingID
-		mysqli_query($con, "DELETE FROM accounts WHERE AccountID='" . $id ."'") or (mysqli_error($con));
-		$message = "Data deleted";
+		$delete = mysqli_query($con, "DELETE FROM accounts WHERE AccountID='" . $id ."'") or (mysqli_error($con));
+		$checkdel = mysqli_fetch_array($delete);
+		if(is_array($checkdel))
+		{
+			$message = "Data deleted";	
+		}
 	}
 ?>
 
@@ -160,7 +202,7 @@ else{
 				<a href="accounts.php?edit=<?php echo $row['AccountID']; ?>" class="edit_btn">Edit</a>
 			</td>
 			<td>
-				<a href="accounts.php?del=<?php echo $row['AccountID']; ?>" class="del_btn">Delete</a>
+				<a onclick="javascript:confirmationDelete($(this));return false;" href="accounts.php?del=<?php echo $row['AccountID']; ?>" class="del_btn">Delete</a>
 			</td> 
 		</tr> <?php } ?>
 </table>
@@ -174,7 +216,7 @@ else{
 <h3 align="center">Accounts</h3>
 
 <div class="input-group">
-<label>Website</label>
+<label>Website URL</label>
 <input type="text" name="Account" value="<?php echo $Account;?>">
 <div>
 
@@ -206,5 +248,13 @@ else{
 </html>
 
 
+<script>
+function confirmationDelete(anchor)
+{
+   var conf = confirm('Are you sure want to delete this website account?');
+   if(conf)
+      window.location=anchor.attr("href");
+}
+</script>
 
 
